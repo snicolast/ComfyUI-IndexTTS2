@@ -51,7 +51,6 @@ Examples
 - Vector emotion: IndexTTS2 Emotion Vector -> IndexTTS2 Simple -> Save
 - Text emotion: IndexTTS2 Emotion From Text -> IndexTTS2 Simple -> Save
 
-Screenshot
 ![ComfyUI-IndexTTS2 nodes](images/overview.png)
 
 Troubleshooting
