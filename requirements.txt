@@ -1,0 +1,31 @@
+accelerate
+git+https://github.com/descriptinc/audiotools
+transformers
+tokenizers
+cn2an
+ffmpeg-python
+Cython
+g2p-en
+jieba
+json5
+keras
+munch
+numba
+numpy
+pandas
+matplotlib
+opencv-python
+tensorboard
+librosa
+safetensors
+modelscope
+omegaconf
+sentencepiece
+tqdm
+textstat
+
+pynini==2.1.6; platform_system!="Windows"
+WeTextProcessing>=1.0.3; platform_system!="Windows"
+
+WeTextProcessing; platform_machine != "Darwin"
+wetext; platform_system == "Darwin"
