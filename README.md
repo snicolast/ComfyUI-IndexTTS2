@@ -6,9 +6,8 @@ Lightweight ComfyUI wrapper for IndexTTS 2 (voice cloning + emotion control). Th
 Original repo: https://github.com/index-tts/index-tts
 
 Install
-- Copy this folder to: ComfyUI/custom_nodes/ComfyUI-IndexTTS2
+- Clone this repository to: ComfyUI/custom_nodes/
 - In your ComfyUI Python environment: pip install -r requirements.txt
-- Recommended: install PyTorch with CUDA for GPU inference.
 
 Models (checkpoints)
 - Download ALL files and subfolders from Hugging Face and put them under this extension's checkpoints/ folder, preserving the original structure:
