@@ -54,5 +54,6 @@ Examples
 ![ComfyUI-IndexTTS2 nodes](images/overview.png)
 
 Troubleshooting
+- Tested only in Windows. DeepSpeed disabled.
 - Emotion vector sum exceeds maximum 1.5: lower one or more sliders or adjust the text-derived vector.
 - BigVGAN kernel message: custom CUDA kernel is disabled by default; falls back to PyTorch ops.
