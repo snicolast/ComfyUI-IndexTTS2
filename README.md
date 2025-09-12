@@ -14,6 +14,7 @@ Models (checkpoints)
 - Download ALL files and subfolders from Hugging Face and put them under this extension's checkpoints/ folder, preserving the original structure:
   https://huggingface.co/IndexTeam/IndexTTS-2/tree/main
 - Example layout:
+  ```
   ComfyUI/custom_nodes/ComfyUI-IndexTTS2/
     nodes/
     checkpoints/
@@ -25,6 +26,7 @@ Models (checkpoints)
       feat2.pt
       wav2vec2bert_stats.pt
       qwen0.6bemo4-merge/   (required only for the Text -> Emotion node)
+  ```
 
 Nodes
 - IndexTTS2 Simple
