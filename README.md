@@ -7,26 +7,45 @@ Original repo: https://github.com/index-tts/index-tts
 
 Install
 - Clone this repository to: ComfyUI/custom_nodes/
-- In your ComfyUI Python environment: pip install -r requirements.txt
+- In your ComfyUI Python environment: 
+  ```bash
+  pip install wetext
+  pip install -r requirements.txt
+  ```
 
 Models (checkpoints)
-- Create a folder named ‘checkpoints’ in the root directory
+- Create a folder named 'checkpoints' in the root directory
 - Download ALL files and subfolders from Hugging Face and put them under the new 'checkpoints' folder, preserving the original structure:
   https://huggingface.co/IndexTeam/IndexTTS-2/tree/main
-- Example layout:
+- **Additional required files for local loading** (download these separately):
+  - BigVGAN files (download from: https://huggingface.co/nvidia/bigvgan_v2_22khz_80band_256x):
+    - Download file: `config.json` → place in: `checkpoints/bigvgan/`
+    - Download file: `bigvgan_generator.pt` → place in: `checkpoints/bigvgan/`
+  - Semantic codec (download from: https://huggingface.co/amphion/MaskGCT/tree/main):
+    - Download file: `semantic_codec/model.safetensors` → place in: `checkpoints/semantic_codec/`
+  - CAMPPlus model (download from: https://huggingface.co/funasr/campplus/tree/main):
+    - Download file: `campplus_cn_common.bin` → place in: `checkpoints/`
+- Complete checkpoints folder structure:
   ```
-  ComfyUI/custom_nodes/ComfyUI-IndexTTS2/
-    nodes/
-    checkpoints/
-      config.yaml
-      gpt.pth
-      s2mel.pth
-      bpe.model
-      feat1.pt
-      feat2.pt
-      wav2vec2bert_stats.pt
-      qwen0.6bemo4-merge/   (required only for the Text -> Emotion node)
+  ComfyUI/custom_nodes/ComfyUI-IndexTTS2/checkpoints/
+  ├── config.yaml
+  ├── gpt.pth
+  ├── s2mel.pth
+  ├── bpe.model
+  ├── feat1.pt
+  ├── feat2.pt
+  ├── wav2vec2bert_stats.pt
+  ├── campplus_cn_common.bin
+  ├── bigvgan/
+  │   ├── config.json
+  │   └── bigvgan_generator.pt
+  ├── semantic_codec/
+  │   └── model.safetensors
+  └── qwen0.6bemo4-merge/          (required only for Text -> Emotion node)
+      └── [all Qwen model files]
   ```
+
+**Important**: The updated code now uses local model files by default for offline usage and faster loading.
 
 Nodes
 - IndexTTS2 Simple
@@ -57,3 +76,13 @@ Troubleshooting
 - Tested only in Windows. DeepSpeed disabled.
 - Emotion vector sum exceeds maximum 1.5: lower one or more sliders or adjust the text-derived vector.
 - BigVGAN kernel message: custom CUDA kernel is disabled by default; falls back to PyTorch ops.
+- **Missing 'wetext' module**: Run `pip install wetext` to fix this Windows-specific dependency.
+- **404 Repository Not Found errors**: Ensure all additional model files are downloaded to your checkpoints folder as described above.
+- **Model loading issues**: Verify your checkpoints folder contains all required files with the correct directory structure.
+
+**Expected Output**: When working correctly, you should see messages like:
+- `Loading config.json from local directory`
+- `Loading weights from local directory`
+- All model paths pointing to your local checkpoints folder
+
+**Performance**: The system processes audio through 4 stages (Text → GPT → S2Mel → BigVGAN). Multiple progress bars and tensor size outputs are normal during inference.
