@@ -10,7 +10,8 @@ Install
 - In your ComfyUI Python environment: pip install -r requirements.txt
 
 Models (checkpoints)
-- Download ALL files and subfolders from Hugging Face and put them under this extension's checkpoints/ folder, preserving the original structure:
+- Create a folder named ‘checkpoints’ in the root directory
+- Download ALL files and subfolders from Hugging Face and put them under the new 'checkpoints' folder, preserving the original structure:
   https://huggingface.co/IndexTeam/IndexTTS-2/tree/main
 - Example layout:
   ```
