@@ -17,7 +17,13 @@ Models (checkpoints)
 - Create a folder named 'checkpoints' in the root directory
 - Download ALL files and subfolders from Hugging Face and put them under the new 'checkpoints' folder, preserving the original structure:
   https://huggingface.co/IndexTeam/IndexTTS-2/tree/main
+  
+  Optional, if auto-cached online if missing:
+
 - **Additional required files for local loading** (download these separately):
+
+  - W2V-BERT-2.0 feature extractor/model (download from: https://huggingface.co/facebook/w2v-bert-2.0):
+    - Download the entire repository contents and place them under: `checkpoints/w2v-bert-2.0/`
   - BigVGAN files (download from: https://huggingface.co/nvidia/bigvgan_v2_22khz_80band_256x):
     - Download file: `config.json` → place in: `checkpoints/bigvgan/`
     - Download file: `bigvgan_generator.pt` → place in: `checkpoints/bigvgan/`
@@ -43,6 +49,8 @@ Models (checkpoints)
   │   └── model.safetensors
   └── qwen0.6bemo4-merge/          (required only for Text -> Emotion node)
       └── [all Qwen model files]
+  ├── w2v-bert-2.0/
+      └── [all bert files]
   ```
 
 **Important**: The updated code now uses local model files by default for offline usage and faster loading.
