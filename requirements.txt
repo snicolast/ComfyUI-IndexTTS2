@@ -29,3 +29,4 @@ WeTextProcessing>=1.0.3; platform_system!="Windows"
 
 WeTextProcessing; platform_machine != "Darwin"
 wetext; platform_system == "Darwin"
+wetext; platform_system == "Windows"
