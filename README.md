@@ -47,9 +47,9 @@ Models (checkpoints)
   │   └── bigvgan_generator.pt
   ├── semantic_codec/
   │   └── model.safetensors
-  └── qwen0.6bemo4-merge/          (required only for Text -> Emotion node)
-      └── [all Qwen model files]
-  ├── w2v-bert-2.0/
+  ├── qwen0.6bemo4-merge/          (required only for Text -> Emotion node)
+  │  └── [all Qwen model files]
+  └── w2v-bert-2.0/
       └── [all bert files]
   ```
 
