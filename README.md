@@ -64,7 +64,7 @@ Models (checkpoints)
 
 **Important**: The updated code now uses local model files by default for offline usage and faster loading.
 
-Nodes
+## Nodes
 - IndexTTS2 Simple
   - Inputs: audio (speaker), text, emotion_control_weight (0.0-1.0), emotion_audio (optional), emotion_vector (optional)
   - Outputs: AUDIO (for Preview/Save), STRING (emotion source message)
@@ -86,7 +86,7 @@ Nodes
   - Requires: modelscope and local QwenEmotion at checkpoints/qwen0.6bemo4-merge/
   - Outputs: EMOTION_VECTOR, STRING summary
 
-Examples
+## Examples
 - Basic: Load Audio -> IndexTTS2 Simple -> Preview/Save Audio
 - Second audio emotion: Load Audio (speaker) + Load Audio (emotion) -> IndexTTS2 Simple -> Save
 - Vector emotion: IndexTTS2 Emotion Vector -> IndexTTS2 Simple -> Save
@@ -94,7 +94,7 @@ Examples
 
 ![ComfyUI-IndexTTS2 nodes](images/overview.png)
 
-Troubleshooting
+## Troubleshooting
 - Tested only in Windows. DeepSpeed disabled.
 - Emotion vector sum exceeds maximum 1.5: lower one or more sliders or adjust the text-derived vector.
 - BigVGAN kernel message: custom CUDA kernel is disabled by default; falls back to PyTorch ops.
