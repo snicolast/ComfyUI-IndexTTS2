@@ -5,6 +5,9 @@ Lightweight ComfyUI wrapper for IndexTTS 2 (voice cloning + emotion control). Th
 
 Original repo: https://github.com/index-tts/index-tts
 
+## Updates
+- Update 2025-09-14: Added IndexTTS2 Advanced node exposing sampling, speed, seed, and other generation controls.
+
 Install
 - Clone this repository to: ComfyUI/custom_nodes/
 - In your ComfyUI Python environment: 
@@ -61,6 +64,11 @@ Nodes
   - Outputs: AUDIO (for Preview/Save), STRING (emotion source message)
 
   - Notes: device auto-detected, FP16 on CUDA, 200 ms pause between segments (fixed), emotion precedence = vector > second audio > original audio
+
+- IndexTTS2 Advanced
+  - Inputs: same as Simple plus optional overrides for sampling (temperature, top-p, top-k, beams), max tokens, speech speed, interval silence, typical sampling, and seed.
+  - Notes: defaults mirror the Simple node; change values only when you need reproducible or exploratory behavior.
+
 
 - IndexTTS2 Emotion Vector
   - 8 sliders (0.0-1.4) for: happy, angry, sad, afraid, disgusted, melancholic, surprised, calm
