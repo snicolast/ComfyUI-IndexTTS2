@@ -8,7 +8,7 @@ Original repo: https://github.com/index-tts/index-tts
 ## Updates
 - Update 2025-09-14: Added IndexTTS2 Advanced node exposing sampling, speed, seed, and other generation controls.
 
-Install
+## Install
 - Clone this repository to: ComfyUI/custom_nodes/
 - In your ComfyUI Python environment: 
   ```bash
