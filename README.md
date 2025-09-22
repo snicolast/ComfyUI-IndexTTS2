@@ -20,41 +20,47 @@ Models (checkpoints)
 - Create a folder named 'checkpoints' in the root directory
 - Download ALL files and subfolders from Hugging Face and put them under the new 'checkpoints' folder, preserving the original structure:
   https://huggingface.co/IndexTeam/IndexTTS-2/tree/main
-  
+  `
   Optional, if auto-cached online if missing:
+
+<details>
+<summary>OPTIONAL: detailed checkpoint download list for total offline use</summary>
 
 - **Additional required files for local loading** (download these separately):
 
-  - W2V-BERT-2.0 feature extractor/model (download from: https://huggingface.co/facebook/w2v-bert-2.0):
+  - W2V-BERT-2.0 feature extractor/model (download from: https://huggingface.co/facebook/w2v-bert-2.0)
     - Download the entire repository contents and place them under: `checkpoints/w2v-bert-2.0/`
-  - BigVGAN files (download from: https://huggingface.co/nvidia/bigvgan_v2_22khz_80band_256x):
-    - Download file: `config.json` → place in: `checkpoints/bigvgan/`
-    - Download file: `bigvgan_generator.pt` → place in: `checkpoints/bigvgan/`
-  - Semantic codec (download from: https://huggingface.co/amphion/MaskGCT/tree/main):
-    - Download file: `semantic_codec/model.safetensors` → place in: `checkpoints/semantic_codec/`
-  - CAMPPlus model (download from: https://huggingface.co/funasr/campplus/tree/main):
-    - Download file: `campplus_cn_common.bin` → place in: `checkpoints/`
+  - BigVGAN files (download from: https://huggingface.co/nvidia/bigvgan_v2_22khz_80band_256x)
+    - Download file: `config.json` -> place in: `checkpoints/bigvgan/`
+    - Download file: `bigvgan_generator.pt` -> place in: `checkpoints/bigvgan/`
+  - Semantic codec (download from: https://huggingface.co/amphion/MaskGCT/tree/main)
+    - Download file: `semantic_codec/model.safetensors` -> place in: `checkpoints/semantic_codec/`
+  - CAMPPlus model (download from: https://huggingface.co/funasr/campplus/tree/main)
+    - Download file: `campplus_cn_common.bin` -> place in: `checkpoints/`
+
 - Complete checkpoints folder structure:
   ```
   ComfyUI/custom_nodes/ComfyUI-IndexTTS2/checkpoints/
-  ├── config.yaml
-  ├── gpt.pth
-  ├── s2mel.pth
-  ├── bpe.model
-  ├── feat1.pt
-  ├── feat2.pt
-  ├── wav2vec2bert_stats.pt
-  ├── campplus_cn_common.bin
-  ├── bigvgan/
-  │   ├── config.json
-  │   └── bigvgan_generator.pt
-  ├── semantic_codec/
-  │   └── model.safetensors
-  ├── qwen0.6bemo4-merge/          (required only for Text -> Emotion node)
-  │  └── [all Qwen model files]
-  └── w2v-bert-2.0/
-      └── [all bert files]
+  |-- config.yaml
+  |-- gpt.pth
+  |-- s2mel.pth
+  |-- bpe.model
+  |-- feat1.pt
+  |-- feat2.pt
+  |-- wav2vec2bert_stats.pt
+  |-- campplus_cn_common.bin
+  |-- bigvgan/
+  |   |-- config.json
+  |   |-- bigvgan_generator.pt
+  |-- semantic_codec/
+  |   |-- model.safetensors
+  |-- qwen0.6bemo4-merge/          (required only for Text -> Emotion node)
+  |   |-- [all Qwen model files]
+  |-- w2v-bert-2.0/
+      |-- [all bert files]
   ```
+
+</details>
 
 **Important**: The updated code now uses local model files by default for offline usage and faster loading.
 
