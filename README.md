@@ -6,7 +6,7 @@ Lightweight ComfyUI wrapper for IndexTTS 2 (voice cloning + emotion control). Th
 Original repo: https://github.com/index-tts/index-tts
 
 ## Updates
-- 2025-09-14: Added IndexTTS2 Advanced node exposing sampling, speed, seed, and other generation controls.
+- 2025-09-22: Added IndexTTS2 Advanced node exposing sampling, speed, seed, and other generation controls.
 
 ## Install
 - Clone this repository to: ComfyUI/custom_nodes/
@@ -61,8 +61,6 @@ Models (checkpoints)
   ```
 
 </details>
-
-**Important**: The updated code now uses local model files by default for offline usage and faster loading.
 
 ## Nodes
 - IndexTTS2 Simple
