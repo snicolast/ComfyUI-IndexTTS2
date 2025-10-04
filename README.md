@@ -1,7 +1,7 @@
-ComfyUI-IndexTTS2
+﻿ComfyUI-IndexTTS2
 =================
 
-Lightweight ComfyUI wrapper for IndexTTS 2 (voice cloning + emotion control). The nodes call the original IndexTTS2 inference and keep behavior faithful to the repo.
+Lightweight ComfyUI wrapper for IndexTTS 2 (voice cloning + emotion control). Nodes call the upstream inference code so behaviour stays matched with the original repo.
 
 Original repo: https://github.com/index-tts/index-tts
 
@@ -9,100 +9,60 @@ Original repo: https://github.com/index-tts/index-tts
 - 2025-09-22: Added IndexTTS2 Advanced node exposing sampling, speed, seed, and other generation controls.
 
 ## Install
-- Clone this repository to: ComfyUI/custom_nodes/
-- In your ComfyUI Python environment: 
+- Clone this repository into `ComfyUI/custom_nodes/`
+- Inside your ComfyUI Python environment:
   ```bash
   pip install wetext
   pip install -r requirements.txt
   ```
 
-Models (checkpoints)
-- Create a folder named 'checkpoints' in the root directory
-- Download ALL files and subfolders from Hugging Face and put them under the new 'checkpoints' folder, preserving the original structure:
-  https://huggingface.co/IndexTeam/IndexTTS-2/tree/main
-  `
-  Optional, if auto-cached online if missing:
-
-<details>
-<summary>OPTIONAL: detailed checkpoint download list for total offline use</summary>
-
-- **Additional required files for local loading** (download these separately):
-
-  - W2V-BERT-2.0 feature extractor/model (download from: https://huggingface.co/facebook/w2v-bert-2.0)
-    - Download the entire repository contents and place them under: `checkpoints/w2v-bert-2.0/`
-  - BigVGAN files (download from: https://huggingface.co/nvidia/bigvgan_v2_22khz_80band_256x)
-    - Download file: `config.json` -> place in: `checkpoints/bigvgan/`
-    - Download file: `bigvgan_generator.pt` -> place in: `checkpoints/bigvgan/`
-  - Semantic codec (download from: https://huggingface.co/amphion/MaskGCT/tree/main)
-    - Download file: `semantic_codec/model.safetensors` -> place in: `checkpoints/semantic_codec/`
-  - CAMPPlus model (download from: https://huggingface.co/funasr/campplus/tree/main)
-    - Download file: `campplus_cn_common.bin` -> place in: `checkpoints/`
-
-- Complete checkpoints folder structure:
+## Models
+- Create `checkpoints/` in the repo root and copy the IndexTTS-2 release there (https://huggingface.co/IndexTeam/IndexTTS-2/tree/main). Missing files will be cached from Hugging Face automatically, but a full local copy keeps everything offline.
+- For full offline use download once and place the files below:
+  - `facebook/w2v-bert-2.0` -> `checkpoints/w2v-bert-2.0/` (the loader checks this folder before contacting Hugging Face)
+  - BigVGAN config and weights -> `checkpoints/bigvgan/`
+  - MaskGCT semantic codec -> `checkpoints/semantic_codec/model.safetensors`
+  - CAMPPlus model -> `checkpoints/campplus_cn_common.bin`
+  - Optional: QwenEmotion (`qwen0.6bemo4-merge/`) for the text-to-emotion helper node
+- Typical layout:
   ```
-  ComfyUI/custom_nodes/ComfyUI-IndexTTS2/checkpoints/
-  |-- config.yaml
-  |-- gpt.pth
-  |-- s2mel.pth
-  |-- bpe.model
-  |-- feat1.pt
-  |-- feat2.pt
-  |-- wav2vec2bert_stats.pt
-  |-- campplus_cn_common.bin
-  |-- bigvgan/
-  |   |-- config.json
-  |   |-- bigvgan_generator.pt
-  |-- semantic_codec/
-  |   |-- model.safetensors
-  |-- qwen0.6bemo4-merge/          (required only for Text -> Emotion node)
-  |   |-- [all Qwen model files]
-  |-- w2v-bert-2.0/
-      |-- [all bert files]
+  checkpoints/
+    config.yaml, gpt.pth, s2mel.pth, bpe.model, feat*.pt, wav2vec2bert_stats.pt
+    bigvgan/{config.json,bigvgan_generator.pt}
+    semantic_codec/model.safetensors
+    campplus_cn_common.bin
+    qwen0.6bemo4-merge/[model files]
+    w2v-bert-2.0/[HF files]
   ```
-
-</details>
 
 ## Nodes
-- IndexTTS2 Simple
-  - Inputs: audio (speaker), text, emotion_control_weight (0.0-1.0), emotion_audio (optional), emotion_vector (optional)
-  - Outputs: AUDIO (for Preview/Save), STRING (emotion source message)
-
-  - Notes: device auto-detected, FP16 on CUDA, 200 ms pause between segments (fixed), emotion precedence = vector > second audio > original audio
-
-- IndexTTS2 Advanced
-  - Inputs: same as Simple plus optional overrides for sampling (temperature, top-p, top-k, beams), max tokens, speech speed, interval silence, typical sampling, and seed.
-  - Notes: defaults mirror the Simple node; change values only when you need reproducible or exploratory behavior.
-
-
-- IndexTTS2 Emotion Vector
-  - 8 sliders (0.0-1.4) for: happy, angry, sad, afraid, disgusted, melancholic, surprised, calm
-  - Constraint: sum of sliders must be <= 1.5 (no auto-scaling)
-  - Output: EMOTION_VECTOR
-
-- IndexTTS2 Emotion From Text (optional)
-  - Input: short descriptive text
-  - Requires: modelscope and local QwenEmotion at checkpoints/qwen0.6bemo4-merge/
-  - Outputs: EMOTION_VECTOR, STRING summary
+- **IndexTTS2 Simple** – speaker audio, text, optional emotion audio/vector; outputs audio + status string. Auto-selects device, FP16 on CUDA.
+- **IndexTTS2 Advanced** – Simple inputs plus overrides for sampling, speech speed, pauses, CFG, seed.
+- **IndexTTS2 Emotion Vector** – eight sliders (0.0–1.4, sum <= 1.5) producing an emotion vector.
+- **IndexTTS2 Emotion From Text** – requires ModelScope and local QwenEmotion; turns short text into an emotion vector + summary.
 
 ## Examples
-- Basic: Load Audio -> IndexTTS2 Simple -> Preview/Save Audio
-- Second audio emotion: Load Audio (speaker) + Load Audio (emotion) -> IndexTTS2 Simple -> Save
-- Vector emotion: IndexTTS2 Emotion Vector -> IndexTTS2 Simple -> Save
-- Text emotion: IndexTTS2 Emotion From Text -> IndexTTS2 Simple -> Save
+- Speaker audio -> IndexTTS2 Simple -> Preview/Save Audio
+- Speaker + emotion audio -> IndexTTS2 Simple -> Save
+- Emotion Vector -> IndexTTS2 Simple -> Save
+- Emotion From Text -> IndexTTS2 Simple -> Save
 
 ![ComfyUI-IndexTTS2 nodes](images/overview.png)
 
 ## Troubleshooting
-- Tested only in Windows. DeepSpeed disabled.
-- Emotion vector sum exceeds maximum 1.5: lower one or more sliders or adjust the text-derived vector.
-- BigVGAN kernel message: custom CUDA kernel is disabled by default; falls back to PyTorch ops.
-- **Missing 'wetext' module**: Run `pip install wetext` to fix this Windows-specific dependency.
-- **404 Repository Not Found errors**: Ensure all additional model files are downloaded to your checkpoints folder as described above.
-- **Model loading issues**: Verify your checkpoints folder contains all required files with the correct directory structure.
+- Windows only so far; DeepSpeed is disabled.
+- Install `wetext` if the module is missing on first launch.
+- If w2v-bert keeps downloading, confirm `checkpoints/w2v-bert-2.0/` exists (or set `W2V_BERT_LOCAL_DIR`).
+- 404 or load failures usually mean a missing file in `checkpoints/`; re-check the tree above.
+- Emotion vector sum must stay <= 1.5.
+- BigVGAN CUDA kernel warnings are expected; PyTorch fallback kicks in automatically.
 
-**Expected Output**: When working correctly, you should see messages like:
+## Logs you should see
 - `Loading config.json from local directory`
-- `Loading weights from local directory`
-- All model paths pointing to your local checkpoints folder
+- `SeamlessM4TFeatureExtractor loaded from: checkpoints/w2v-bert-2.0/`
+- Model paths pointing at your `checkpoints/` tree.
 
-**Performance**: The system processes audio through 4 stages (Text → GPT → S2Mel → BigVGAN). Multiple progress bars and tensor size outputs are normal during inference.
+
+
+
+
