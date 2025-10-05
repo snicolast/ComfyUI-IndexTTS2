@@ -1,4 +1,4 @@
-import os
+﻿import os
 import random
 import numpy as np
 
@@ -123,6 +123,8 @@ class IndexTTS2Advanced:
                 "typical_sampling": ("BOOLEAN", {"default": False}),
                 "typical_mass": ("FLOAT", {"default": 0.9, "min": 0.0, "max": 2000.0, "step": 0.01}),
                 "speech_speed": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 4.0, "step": 0.05}),
+                "use_fp16": ("BOOLEAN", {"default": False}),
+                "output_gain": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 4.0, "step": 0.05}),
             },
         }
 
@@ -150,7 +152,9 @@ class IndexTTS2Advanced:
                    max_mel_tokens: int = 1500,
                    typical_sampling: bool = False,
                    typical_mass: float = 0.9,
-                   speech_speed: float = 1.0):
+                   speech_speed: float = 1.0,
+                   use_fp16: bool = False,
+                   output_gain: float = 1.0):
 
         if not isinstance(text, str) or len(text.strip()) == 0:
             raise ValueError("Text is empty. Please provide text to synthesize.")
@@ -181,12 +185,13 @@ class IndexTTS2Advanced:
             raise FileNotFoundError(f"Model directory not found: {resolved_model_dir}")
 
         resolved_device = _resolve_device("auto")
+        use_fp16_flag = _coerce_bool(use_fp16, False)
         tts2 = _get_tts2_model(
             config_path=resolved_config,
             model_dir=resolved_model_dir,
             device=resolved_device,
             use_cuda_kernel=False,
-            use_fp16=True,
+            use_fp16=use_fp16_flag,
         )
 
         torch_mod = None
@@ -219,6 +224,9 @@ class IndexTTS2Advanced:
         emo_alpha = max(0.0, min(1.0, float(emotion_control_weight)))
         emo_audio_prompt = emo_path if emo_path else prompt_path
         ui_msgs = []
+        ui_msgs.append(f"Model precision: {'FP16' if use_fp16_flag else 'FP32'}")
+
+        gain_value = _coerce_float(output_gain, 1.0, clamp=(0.0, 4.0))
 
         emo_vector_arg = None
         if emotion_vector is not None:
@@ -330,11 +338,16 @@ class IndexTTS2Advanced:
         if mono.ndim != 1:
             mono = mono.flatten()
 
-        waveform = torch_lib.from_numpy(mono[None, None, :].astype(np.float32))
-
         info_lines = []
         if ui_msgs:
             info_lines.extend(ui_msgs)
+
+        if gain_value != 1.0:
+            mono = np.clip(mono * gain_value, -1.0, 1.0)
+            info_lines.append(f"Output gain applied: {gain_value:.2f}x")
+
+        waveform = torch_lib.from_numpy(mono[None, None, :].astype(np.float32))
+
         info_lines.append(f"Seed: {seed_info}")
         if do_sample:
             info_lines.append(f"Sampling: temp={temperature:.2f}, top_p={top_p:.2f}, top_k={top_k}")
@@ -347,4 +360,6 @@ class IndexTTS2Advanced:
 
         info_text = "\n".join(info_lines)
         return ({"sample_rate": int(sr), "waveform": waveform}, info_text)
+
+
 

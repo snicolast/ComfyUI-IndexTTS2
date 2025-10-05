@@ -1,4 +1,4 @@
-import gc
+﻿import gc
 import os
 import sys
 import tempfile
@@ -340,6 +340,8 @@ class IndexTTS2Simple:
             "optional": {
                 "emotion_audio": ("AUDIO",),
                 "emotion_vector": ("EMOTION_VECTOR",),
+                "use_fp16": ("BOOLEAN", {"default": False}),
+                "output_gain": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 4.0, "step": 0.05}),
             },
         }
 
@@ -352,7 +354,7 @@ class IndexTTS2Simple:
                    text: str,
                    emotion_control_weight: float,
                    emotion_audio=None,
-                   emotion_vector=None):
+                   emotion_vector=None, use_fp16=False, output_gain=1.0):
 
         if not isinstance(text, str) or len(text.strip()) == 0:
             raise ValueError("Text is empty. Please provide text to synthesize.")
@@ -377,17 +379,28 @@ class IndexTTS2Simple:
             raise FileNotFoundError(f"Model directory not found: {resolved_model_dir}")
 
         resolved_device = _resolve_device("auto")
+        use_fp16_flag = bool(use_fp16)
         tts2 = _get_tts2_model(
             config_path=resolved_config,
             model_dir=resolved_model_dir,
             device=resolved_device,
             use_cuda_kernel=False,
-            use_fp16=True,
+            use_fp16=use_fp16_flag,
         )
 
         emo_alpha = max(0.0, min(1.0, float(emotion_control_weight)))
-        emo_vector = None
         ui_msgs = []
+        ui_msgs.append(f"Model precision: {'FP16' if use_fp16_flag else 'FP32'}")
+
+        try:
+            gain_value = float(output_gain)
+        except (TypeError, ValueError):
+            gain_value = 1.0
+        if not math.isfinite(gain_value):
+            gain_value = 1.0
+        gain_value = max(0.0, min(4.0, gain_value))
+
+        emo_vector = None
         if emotion_vector is not None:
             try:
                 vec = list(emotion_vector)
@@ -461,6 +474,13 @@ class IndexTTS2Simple:
         if mono.ndim != 1:
             mono = mono.flatten()
 
+        if gain_value != 1.0:
+            mono = np.clip(mono * gain_value, -1.0, 1.0)
+            ui_msgs.append(f"Output gain applied: {gain_value:.2f}x")
+
         waveform = torch.from_numpy(mono[None, None, :].astype(np.float32))  #(B=1, C=1, N)
         info_text = "\n".join(ui_msgs) if ui_msgs else ""
         return ({"sample_rate": int(sr), "waveform": waveform}, info_text)
+
+
+

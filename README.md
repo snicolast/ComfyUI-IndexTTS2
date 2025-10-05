@@ -36,8 +36,8 @@ Original repo: https://github.com/index-tts/index-tts
   ```
 
 ## Nodes
-- **IndexTTS2 Simple** – speaker audio, text, optional emotion audio/vector; outputs audio + status string. Auto-selects device, FP16 on CUDA.
-- **IndexTTS2 Advanced** – Simple inputs plus overrides for sampling, speech speed, pauses, CFG, seed.
+- **IndexTTS2 Simple** - speaker audio, text, optional emotion audio/vector; outputs audio + status string. Auto-selects device (FP32 by default; optional FP16 toggle) and includes an output gain scaler.
+- **IndexTTS2 Advanced** - Simple inputs plus overrides for sampling, speech speed, pauses, CFG, seed, FP16 toggle, and output gain.
 - **IndexTTS2 Emotion Vector** – eight sliders (0.0–1.4, sum <= 1.5) producing an emotion vector.
 - **IndexTTS2 Emotion From Text** – requires ModelScope and local QwenEmotion; turns short text into an emotion vector + summary.
 
@@ -56,11 +56,15 @@ Original repo: https://github.com/index-tts/index-tts
 - 404 or load failures usually mean a missing file in `checkpoints/`; re-check the tree above.
 - Emotion vector sum must stay <= 1.5.
 - BigVGAN CUDA kernel warnings are expected; PyTorch fallback kicks in automatically.
+- Hearing metallic warble? Leave `use_fp16` off; enable it only if you really need more speed and accept the artifacts.
+- Need more level? Raise `output_gain` (values above 1.0 are clipped back into [-1,1]).
 
 ## Logs you should see
 - `Loading config.json from local directory`
 - `SeamlessM4TFeatureExtractor loaded from: checkpoints/w2v-bert-2.0/`
 - Model paths pointing at your `checkpoints/` tree.
+
+
 
 
 
